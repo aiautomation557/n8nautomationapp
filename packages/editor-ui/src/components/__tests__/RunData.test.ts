@@ -113,7 +113,6 @@ describe('RunData', () => {
 					},
 					workflowExecutionData: {
 						id: '1',
-						finished: true,
 						mode: 'trigger',
 						startedAt: new Date(),
 						workflowData: {

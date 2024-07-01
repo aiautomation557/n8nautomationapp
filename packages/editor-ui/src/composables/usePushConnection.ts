@@ -197,7 +197,6 @@ export function usePushConnection({ router }: { router: ReturnType<typeof useRou
 					}
 					const iRun: IRun = {
 						data: iRunExecutionData,
-						finished: executionData.finished,
 						mode: executionData.mode,
 						waitTill: executionData.data?.waitTill,
 						startedAt: executionData.startedAt,
@@ -333,7 +332,11 @@ export function usePushConnection({ router }: { router: ReturnType<typeof useRou
 					type: 'success',
 					duration: 0,
 				});
-			} else if (runDataExecuted.finished !== true) {
+			} else if (
+				runDataExecuted.status === 'error' ||
+				runDataExecuted.status === 'canceled' ||
+				runDataExecuted.status === 'crashed'
+			) {
 				titleChange.titleSet(workflow.name as string, 'ERROR');
 
 				if (
@@ -524,7 +527,6 @@ export function usePushConnection({ router }: { router: ReturnType<typeof useRou
 
 			const executionData: IExecutionsCurrentSummaryExtended = {
 				id: pushData.executionId,
-				finished: false,
 				status: 'running',
 				mode: pushData.mode,
 				startedAt: pushData.startedAt,
