@@ -1,21 +1,18 @@
+import type { PermissionsRecord } from '@/permissions';
 import {
 	getVariablesPermissions,
 	getProjectPermissions,
 	getCredentialPermissions,
 	getWorkflowPermissions,
+	getResourcePermissions,
 } from '@/permissions';
 import type { ICredentialsResponse, IUser, IWorkflowDb } from '@/Interface';
 import type { Project } from '@/types/projects.types';
+import type { Scope } from '@n8n/permissions';
 
 describe('permissions', () => {
 	it('getVariablesPermissions', () => {
-		expect(getVariablesPermissions(null)).toEqual({
-			create: false,
-			read: false,
-			update: false,
-			delete: false,
-			list: false,
-		});
+		expect(getVariablesPermissions(null)).toEqual(null);
 
 		expect(
 			getVariablesPermissions({
@@ -40,10 +37,7 @@ describe('permissions', () => {
 				globalScopes: ['variable:read', 'variable:list'],
 			} as IUser),
 		).toEqual({
-			create: false,
 			read: true,
-			update: false,
-			delete: false,
 			list: true,
 		});
 	});
@@ -116,5 +110,81 @@ describe('permissions', () => {
 			execute: true,
 			move: true,
 		});
+	});
+
+	it('getResourcePermissions', () => {
+		const scopes: Scope[] = [
+			'credential:create',
+			'credential:delete',
+			'credential:list',
+			'credential:move',
+			'credential:read',
+			'credential:share',
+			'credential:update',
+			'eventBusDestination:list',
+			'eventBusDestination:test',
+			'project:list',
+			'project:read',
+			'tag:create',
+			'tag:list',
+			'tag:read',
+			'tag:update',
+			'user:list',
+			'variable:list',
+			'variable:read',
+			'workflow:create',
+			'workflow:delete',
+			'workflow:execute',
+			'workflow:list',
+			'workflow:move',
+			'workflow:read',
+			'workflow:share',
+			'workflow:update',
+		];
+
+		const permissionRecord: PermissionsRecord = {
+			credential: {
+				create: true,
+				delete: true,
+				list: true,
+				move: true,
+				read: true,
+				share: true,
+				update: true,
+			},
+			eventBusDestination: {
+				list: true,
+				test: true,
+			},
+			project: {
+				list: true,
+				read: true,
+			},
+			tag: {
+				create: true,
+				list: true,
+				read: true,
+				update: true,
+			},
+			user: {
+				list: true,
+			},
+			variable: {
+				list: true,
+				read: true,
+			},
+			workflow: {
+				create: true,
+				delete: true,
+				execute: true,
+				list: true,
+				move: true,
+				read: true,
+				share: true,
+				update: true,
+			},
+		};
+
+		expect(getResourcePermissions(scopes)).toEqual(permissionRecord);
 	});
 });
